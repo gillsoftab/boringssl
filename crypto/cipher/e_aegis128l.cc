@@ -16,40 +16,40 @@
 #if defined(OPENSSL_X86_64) || defined(OPENSSL_AARCH64)
 
 #ifdef OPENSSL_X86_64
-# ifdef __clang__
-#  pragma clang attribute push(__attribute__((target("aes,avx"))), \
-                               apply_to = function)
-# elif defined(__GNUC__)
-#  pragma GCC target("aes,avx")
-# endif
+#ifdef __clang__
+#pragma clang attribute push(__attribute__((target("aes,avx"))), \
+                             apply_to = function)
+#elif defined(__GNUC__)
+#pragma GCC target("aes,avx")
+#endif
 
-# include <wmmintrin.h>
+#include <wmmintrin.h>
 
 typedef __m128i aes_block_t;
-# define AES_BLOCK_XOR(A, B) _mm_xor_si128((A), (B))
-# define AES_BLOCK_AND(A, B) _mm_and_si128((A), (B))
-# define AES_BLOCK_LOAD(A) \
-    _mm_loadu_si128((const aes_block_t *)(const void *)(A))
-# define AES_BLOCK_LOAD_64x2(A, B) _mm_set_epi64x((A), (B))
-# define AES_BLOCK_STORE(A, B) _mm_storeu_si128((aes_block_t *)(void *)(A), (B))
-# define AES_ENC(A, B) _mm_aesenc_si128((A), (B))
+#define AES_BLOCK_XOR(A, B) _mm_xor_si128((A), (B))
+#define AES_BLOCK_AND(A, B) _mm_and_si128((A), (B))
+#define AES_BLOCK_LOAD(A) \
+  _mm_loadu_si128((const aes_block_t *)(const void *)(A))
+#define AES_BLOCK_LOAD_64x2(A, B) _mm_set_epi64x((A), (B))
+#define AES_BLOCK_STORE(A, B) _mm_storeu_si128((aes_block_t *)(void *)(A), (B))
+#define AES_ENC(A, B) _mm_aesenc_si128((A), (B))
 
 #elif defined(OPENSSL_AARCH64)
 
-# include <arm_neon.h>
+#include <arm_neon.h>
 
-# ifdef __clang__
-#  pragma clang attribute push(__attribute__((target("neon,crypto,aes"))), \
-                               apply_to = function)
-# elif defined(__GNUC__)
-#  pragma GCC target("+simd+crypto")
-# endif
-# ifndef __ARM_FEATURE_CRYPTO
-#  define __ARM_FEATURE_CRYPTO 1
-# endif
-# ifndef __ARM_FEATURE_AES
-#  define __ARM_FEATURE_AES 1
-# endif
+#ifdef __clang__
+#pragma clang attribute push(__attribute__((target("neon,crypto,aes"))), \
+                             apply_to = function)
+#elif defined(__GNUC__)
+#pragma GCC target("+simd+crypto")
+#endif
+#ifndef __ARM_FEATURE_CRYPTO
+#define __ARM_FEATURE_CRYPTO 1
+#endif
+#ifndef __ARM_FEATURE_AES
+#define __ARM_FEATURE_AES 1
+#endif
 
 typedef uint8x16_t aes_block_t;
 #define AES_BLOCK_XOR(A, B) veorq_u8((A), (B))
@@ -61,7 +61,7 @@ typedef uint8x16_t aes_block_t;
 #define AES_ENC(A, B) veorq_u8(vaesmcq_u8(vaeseq_u8(vmovq_n_u8(0), (A))), (B))
 
 #else
-# error "Unsupported architecture"
+#error "Unsupported architecture"
 #endif
 
 struct aead_aegis_128l_ctx {
@@ -122,12 +122,10 @@ static inline void aegis_128l_state_update(aes_block_t *const state,
 
 static void aegis_128l_state_init(const uint8_t *key, const uint8_t *nonce,
                                   size_t nonce_len, aes_block_t *const state) {
-  static
-      const uint8_t c0_[] = {0xdb, 0x3d, 0x18, 0x55, 0x6d, 0xc2, 0x2f, 0xf1,
-                             0x20, 0x11, 0x31, 0x42, 0x73, 0xb5, 0x28, 0xdd};
-  static
-      const uint8_t c1_[] = {0x00, 0x01, 0x01, 0x02, 0x03, 0x05, 0x08, 0x0d,
-                             0x15, 0x22, 0x37, 0x59, 0x90, 0xe9, 0x79, 0x62};
+  static const uint8_t c0_[] = {0xdb, 0x3d, 0x18, 0x55, 0x6d, 0xc2, 0x2f, 0xf1,
+                                0x20, 0x11, 0x31, 0x42, 0x73, 0xb5, 0x28, 0xdd};
+  static const uint8_t c1_[] = {0x00, 0x01, 0x01, 0x02, 0x03, 0x05, 0x08, 0x0d,
+                                0x15, 0x22, 0x37, 0x59, 0x90, 0xe9, 0x79, 0x62};
   const aes_block_t c0 = AES_BLOCK_LOAD(c0_);
   const aes_block_t c1 = AES_BLOCK_LOAD(c1_);
 
@@ -390,9 +388,9 @@ static const EVP_AEAD aead_aegis_128l = {
 };
 
 #if defined(OPENSSL_X86_64) || defined(OPENSSL_AARCH64)
-# ifdef __clang__
-#  pragma clang attribute pop
-# endif
+#ifdef __clang__
+#pragma clang attribute pop
+#endif
 #endif
 
 #endif

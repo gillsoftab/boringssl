@@ -1820,6 +1820,7 @@ bool Speed(const std::vector<std::string> &args) {
   }
   if (!SpeedRSA(selected) ||
       !SpeedAEAD(EVP_aead_aegis_128l(), "AEGIS-128L", kTLSADLen, selected) ||
+      !SpeedAEAD(EVP_aead_aegis_128x2(), "AEGIS-128X2", kTLSADLen, selected) ||
       !SpeedAEAD(EVP_aead_aegis_256(), "AEGIS-256", kTLSADLen, selected) ||
       !SpeedAEAD(EVP_aead_aes_128_gcm(), "AES-128-GCM", kTLSADLen, selected) ||
       !SpeedAEAD(EVP_aead_aes_256_gcm(), "AES-256-GCM", kTLSADLen, selected) ||

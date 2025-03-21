@@ -361,6 +361,18 @@ static constexpr SSL_CIPHER kCiphers[] = {
         SSL_HANDSHAKE_MAC_SHA256,
     },
 
+    // Cipher ff01
+    {
+      TLS1_3_TXT_AEGIS_128X2_SHA256,
+      "TLS_AEGIS_128X2_SHA256",
+      TLS1_3_CK_AEGIS_128X2_SHA256,
+      SSL_kGENERIC,
+      SSL_aGENERIC,
+      SSL_AEGIS128X2,
+      SSL_AEAD,
+      SSL_HANDSHAKE_MAC_SHA256,
+    },
+
 };
 
 Span<const SSL_CIPHER> AllCiphers() { return kCiphers; }
@@ -450,6 +462,8 @@ static const CIPHER_ALIAS kCipherAliases[] = {
      /*include_deprecated=*/false},
     {"AEGIS128L", ~0u, ~0u, SSL_AEGIS128L, ~0u, 0,
      /*include_deprecated=*/false},
+    {"AEGIS128X2", ~0u, ~0u, SSL_AEGIS128X2, ~0u, 0,
+     /*include_deprecated=*/false},
     {"AEGIS256", ~0u, ~0u, SSL_AEGIS256, ~0u, 0,
      /*include_deprecated=*/false},
 
@@ -503,6 +517,9 @@ bool ssl_cipher_get_evp_aead(const EVP_AEAD **out_aead,
       *out_fixed_iv_len = 12;
     } else if (cipher->algorithm_enc == SSL_AEGIS128L) {
       *out_aead = EVP_aead_aegis_128l();
+      *out_fixed_iv_len = 12;
+    } else if (cipher->algorithm_enc == SSL_AEGIS128X2) {
+      *out_aead = EVP_aead_aegis_128x2();
       *out_fixed_iv_len = 12;
     } else if (cipher->algorithm_enc == SSL_AEGIS256) {
       *out_aead = EVP_aead_aegis_256();
@@ -1447,6 +1464,7 @@ int SSL_CIPHER_get_bits(const SSL_CIPHER *cipher, int *out_alg_bits) {
     case SSL_AES128:
     case SSL_AES128GCM:
     case SSL_AEGIS128L:
+    case SSL_AEGIS128X2:
       alg_bits = 128;
       strength_bits = 128;
       break;
@@ -1557,6 +1575,10 @@ const char *SSL_CIPHER_description(const SSL_CIPHER *cipher, char *buf,
 
     case SSL_AEGIS128L:
       enc = "AEGIS-128L";
+      break;
+
+    case SSL_AEGIS128X2:
+      enc = "AEGIS-128X2";
       break;
 
     case SSL_AEGIS256:

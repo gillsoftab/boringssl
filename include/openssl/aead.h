@@ -93,6 +93,9 @@ extern "C" {
 // AEGIS-128L
 OPENSSL_EXPORT const EVP_AEAD *EVP_aead_aegis_128l(void);
 
+// AEGIS-128X2
+OPENSSL_EXPORT const EVP_AEAD *EVP_aead_aegis_128x2(void);
+
 // AEGIS-256
 OPENSSL_EXPORT const EVP_AEAD *EVP_aead_aegis_256(void);
 

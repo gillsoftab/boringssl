@@ -341,6 +341,7 @@ extern "C" {
 // Experimental ciphersuites from draft-irtf-cfrg-aegis-aead
 #define TLS1_3_CK_AEGIS_256_SHA512 0x03001306
 #define TLS1_3_CK_AEGIS_128L_SHA256 0x03001307
+#define TLS1_3_CK_AEGIS_128X2_SHA256 0x0300ff01
 
 // The following constants are legacy aliases of |TLS1_3_CK_*|.
 // TODO(davidben): Migrate callers to the new name and remove these.
@@ -525,6 +526,7 @@ extern "C" {
 // Experimental ciphersuites from draft-irtf-cfrg-aegis-aead
 #define TLS1_3_TXT_AEGIS_256_SHA512 "TLS_AEGIS_256_SHA512"
 #define TLS1_3_TXT_AEGIS_128L_SHA256 "TLS_AEGIS_128L_SHA256"
+#define TLS1_3_TXT_AEGIS_128X2_SHA256 "TLS_AEGIS_128X2_SHA256"
 
 // The following constants are legacy aliases of |TLS1_3_CK_*|.
 // TODO(bbe): Migrate callers to the new name and remove these.
